@@ -2,7 +2,9 @@ package com.workout.workouttrackerapp.controller;
 
 import com.workout.workouttrackerapp.dao.WorkoutRepository;
 import com.workout.workouttrackerapp.model.Workout;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,5 +20,10 @@ public class WorkoutController {
     @GetMapping("api/workouts")
     public List<Workout> getAllWorkouts(){
         return workoutRepository.findAll();
+    }
+
+    @DeleteMapping("api/workouts/{workoutId}")
+    public void deleteWorkout(@PathVariable("workoutId") Integer id){
+        workoutRepository.deleteById(id);
     }
 }
