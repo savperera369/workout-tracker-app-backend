@@ -2,14 +2,12 @@ package com.workout.workouttrackerapp.controller;
 
 import com.workout.workouttrackerapp.dao.WorkoutRepository;
 import com.workout.workouttrackerapp.model.Workout;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/workouts")
 public class WorkoutController {
     private final WorkoutRepository workoutRepository;
 
@@ -17,12 +15,25 @@ public class WorkoutController {
         this.workoutRepository = workoutRepository;
     }
 
-    @GetMapping("api/workouts")
+    @GetMapping
     public List<Workout> getAllWorkouts(){
         return workoutRepository.findAll();
     }
 
-    @DeleteMapping("api/workouts/{workoutId}")
+    record NewWorkoutRequest(String name, int duration, String date){}
+
+    // request that comes from the client, we need to capture that to the request body
+    // request body will be JSON object that will be mapped into a NewWorkoutRequest object
+    @PostMapping
+    public void addCustomer(@RequestBody NewWorkoutRequest request){
+        Workout workout = new Workout();
+        workout.setName(request.name());
+        workout.setDuration(request.duration());
+        workout.setDate(request.date());
+        // save to database
+        workoutRepository.save(workout);
+    }
+    @DeleteMapping("/{workoutId}")
     public void deleteWorkout(@PathVariable("workoutId") Integer id){
         workoutRepository.deleteById(id);
     }
